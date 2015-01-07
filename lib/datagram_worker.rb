@@ -19,7 +19,7 @@ module DatagramWorker
     $x  = $ch.topic('datagrams_topic_exchange', auto_delete: false)
     $datagram_responses =  $ch.queue("datagram_responses", :durable => true)
 
-    $ch.queue('', durable: true).bind($x, routing_key: 'datagram-9j4p9y2gSRrhN4teIroXfg').subscribe(block: true) do |di, md, pl|
+    $ch.queue('', durable: true).bind($x, routing_key: routing_key).subscribe(block: true) do |di, md, pl|
       yield(di,md,JSON.parse(pl))
     end
 
