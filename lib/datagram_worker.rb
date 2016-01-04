@@ -31,7 +31,7 @@ module DatagramWorker
     responses.each do |id, response|
       r = {
         status_code: 200,
-        elapsed: Time.now - @@responses[id]
+        elapsed: Time.now - @@responses[id],
         data: {
           status_code: 200,
           data: response,
