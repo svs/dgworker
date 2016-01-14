@@ -22,7 +22,6 @@ module DatagramWorker
 
     $ch.queue('', durable: true).bind($x, routing_key: routing_key).subscribe(block: true) do |di, md, pl|
       j = JSON.parse(pl)
-      ap j
       @@responses[j["key"]] = [Time.now, j["datagram_id"]]
       yield(di,md,j)
     end
@@ -30,9 +29,6 @@ module DatagramWorker
 
   def self.respond_with(responses)
     responses.each do |id, response|
-      ap @@responses
-      ap id
-      ap @@responses[id]
       r = {
         status_code: 200,
         elapsed: Time.now - @@responses[id][0],
