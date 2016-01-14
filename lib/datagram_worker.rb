@@ -22,21 +22,27 @@ module DatagramWorker
 
     $ch.queue('', durable: true).bind($x, routing_key: routing_key).subscribe(block: true) do |di, md, pl|
       j = JSON.parse(pl)
-      @@responses[j["key"]] = Time.now
+      ap j
+      @@responses[j["key"]] = [Time.now, j["datagram_id"]]
       yield(di,md,j)
     end
   end
 
   def self.respond_with(responses)
     responses.each do |id, response|
+      ap @@responses
+      ap id
+      ap @@responses[id]
       r = {
         status_code: 200,
-        elapsed: Time.now - @@responses[id],
+        elapsed: Time.now - @@responses[id][0],
         data: {
           status_code: 200,
           data: response,
         },
-        id: id
+        id: id,
+        timestamp: Time.now.to_i,
+        datagram_id: @@responses[id][1]
       }
       @@responses.delete(id)
       $datagram_responses.publish(r.to_json)
