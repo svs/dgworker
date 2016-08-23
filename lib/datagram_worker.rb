@@ -34,10 +34,10 @@ module DatagramWorker
         elapsed: Time.now - @@responses[id][0],
         data: {
           status_code: 200,
-          data: response,
+          data: response[:data],
         },
         id: id,
-        timestamp: Time.now.to_i,
+        timestamp: response[:timestamp],
         datagram_id: @@responses[id][1]
       }
       @@responses.delete(id)
